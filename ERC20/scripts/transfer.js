@@ -2,6 +2,10 @@
 const hre = require("hardhat");
 const { encryptDataField, decryptNodeResponse } = require("@swisstronik/swisstronik.js");
 const erc20contract = "0xbDfa109d6df2611F6652Dc3fE3E325801012b237"
+const recipient = "0x16af037878a6cAce2Ea29d39A3757aC2F6F7aac1"; //recipient address
+const amount = "1"; //amount transfer
+
+
 
 // Function to send a shielded transaction using the provided signer, destination, data, and value
 const sendShieldedTransaction = async (signer, destination, data, value) => {
@@ -22,23 +26,24 @@ const sendShieldedTransaction = async (signer, destination, data, value) => {
 
 async function main() {
   // Address of the deployed contract
-  const contractAddress = erc20contract;
+  const replace_contractAddress = erc20contract;
 
   // Get the signer (your account)
   const [signer] = await hre.ethers.getSigners();
 
   // Create a contract instance
-  const contractFactory = await hre.ethers.getContractFactory("AfiqHaekal");
-  const contract = contractFactory.attach(contractAddress);
+  const replace_contractFactory = await hre.ethers.getContractFactory("AfiqHaekal");
+  const contract = replace_contractFactory.attach(replace_contractAddress);
 
-  // Send a shielded transaction to mint 100 tokens in the contract
-  const functionName = "mint";
-  const mintTx = await sendShieldedTransaction(signer, contractAddress, contract.interface.encodeFunctionData(functionName), 0);
+  // Send a shielded transaction to execute a transaction in the contract
+  const replace_functionName = "transfer";
+  const replace_functionArgs = [recipient, amount];
+  const transaction = await sendShieldedTransaction(signer, replace_contractAddress, contract.interface.encodeFunctionData(replace_functionName, replace_functionArgs), 0);
 
-  await mintTx.wait();
+  await transaction.wait();
 
-  // It should return a TransactionReceipt object
-  console.log("Transaction Receipt: ", mintTx);
+  // It should return a TransactionResponse object
+  console.log("Tx: ", transaction);
 }
 
 // Using async/await pattern to handle errors properly
